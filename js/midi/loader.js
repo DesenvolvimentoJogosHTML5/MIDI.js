@@ -162,7 +162,6 @@ MIDI.Player = MIDI.Player || {};
 			var request = requests.pop();
 			sendRequest(request.instrumentId, request.audioFormat, function(evt, progress) {
 				var prog  = (length-requests.length)/length;
-				console.log(prog);
 				onprogress && onprogress('load', prog, request.instrumentId);
 			}, function() {
 				recursiveSendRequests(requests,onprogress,onerror,finish,length)
