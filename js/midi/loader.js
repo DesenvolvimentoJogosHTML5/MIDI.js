@@ -137,7 +137,7 @@ MIDI.Player = MIDI.Player || {};
 		///
 		var length = instruments.length;
 		var oncomplete = function() {
-			onprogress && onprogress('load', 1);
+			onprogress && onprogress('load', 100);
 			root[context].connect(opts);
 		};
 		///
@@ -161,7 +161,7 @@ MIDI.Player = MIDI.Player || {};
 		if(requests.length > 0){
 			var request = requests.pop();
 			sendRequest(request.instrumentId, request.audioFormat, function(evt, progress) {
-				var prog  = (length-requests.length)/length;
+				var prog =  ((length-requests.length)*100)/length;
 				onprogress && onprogress('load', prog, request.instrumentId);
 			}, function() {
 				recursiveSendRequests(requests,onprogress,onerror,finish,length)
