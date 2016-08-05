@@ -109,7 +109,7 @@ if (typeof MIDI === 'undefined') MIDI = {};
 
 	root.GM = (function(arr) {
 		var clean = function(name) {
-			return name.replace(/[^a-z0-9 ]/gi, '').replace(/[ ]/g, '_').toLowerCase();
+			return name.replace(/[^a-z0-9 ]/gi, '').replace(/[ ]/,'_').toLowerCase();
 		};
 		var res = {
 			byName: { },
