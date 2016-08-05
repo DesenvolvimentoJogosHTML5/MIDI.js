@@ -275,6 +275,12 @@
 				}
 				///
 				var synth = root.GM.byName[instrument];
+
+				if(synth == undefined){
+					console.error('instrument '+instrument+' doesn\'t exists');
+					continue;
+				}
+
 				var instrumentId = synth.number;
 				///
 				bufferPending[instrumentId] = 0;
