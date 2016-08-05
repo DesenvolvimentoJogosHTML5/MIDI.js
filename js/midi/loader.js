@@ -137,7 +137,7 @@ MIDI.Player = MIDI.Player || {};
 		///
 		var length = instruments.length;
 		var oncomplete = function() {
-			onprogress && onprogress('load', 1, 'instruments loaded');
+			onprogress && onprogress('load', 1);
 			root[context].connect(opts);
 		};
 		///
