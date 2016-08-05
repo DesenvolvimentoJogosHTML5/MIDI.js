@@ -136,28 +136,40 @@ MIDI.Player = MIDI.Player || {};
 		var onerror = opts.onerror;
 		///
 		var length = instruments.length;
-		var pending = length;
-		var waitForEnd = function() {
-			if (!--pending) {
-				onprogress && onprogress('load', 1.0);
-				root[context].connect(opts);
-			}
+		var oncomplete = function() {
+			onprogress && onprogress('load', 1, 'instruments loaded');
+			root[context].connect(opts);
 		};
 		///
+
+		var requests = [];
+
 		for (var i = 0; i < length; i ++) {
 			var instrumentId = instruments[i];
-			if (MIDI.Soundfont[instrumentId]) { // already loaded
-				waitForEnd();
-			} else { // needs to be requested
-				sendRequest(instruments[i], audioFormat, function(evt, progress) {
-					var fileProgress = progress / length;
-					var queueProgress = (length - pending) / length;
-					onprogress && onprogress('load', fileProgress + queueProgress, instrumentId);
-				}, function() {
-					waitForEnd();
-				}, onerror);
+			if (MIDI.Soundfont[instrumentId] == undefined) { // already loaded
+				requests.push({
+					instrumentId:instrumentId,
+					audioFormat:audioFormat
+				});
 			}
-		};
+		}
+
+		recursiveSendRequests(requests,onprogress,onerror,oncomplete,length);
+	};
+
+	var recursiveSendRequests = function(requests,onprogress,onerror,finish,length){
+		if(requests.length > 0){
+			var request = requests.pop();
+			sendRequest(request.instrumentId, request.audioFormat, function(evt, progress) {
+				var prog  = (length-requests.length)/length;
+				onprogress && onprogress('load', prog, request.instrumentId);
+			}, function() {
+				recursiveSendRequests(requests,onprogress,onerror,finish,length)
+			}, onerror);
+		}
+		else{
+			finish();
+		}
 	};
 
 	var sendRequest = function(instrumentId, audioFormat, onprogress, onsuccess, onerror) {
